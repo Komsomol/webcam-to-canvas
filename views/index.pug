@@ -1,0 +1,31 @@
+doctype html
+html(lang='en')
+    head
+        include includes/header.pug
+    body
+        div(class='container')
+        
+            div(class="device-select input-group mb-3 section")
+                div(class="input-group-prepend")
+                    label(class="input-group-text" for="select") Pick Device
+                select(id="select" class="custom-select")
+                          
+            div(class='video-holder section')
+                video
+                    source(src='')
+
+            div(class='controls section')
+                button(type="button" class="btn btn-dark saveBtn") Save
+                button(type="button" class="btn btn-dark sendBtn") Send
+            
+            div(class='canvas-holder')
+                canvas(id='canvas')
+
+            div(class='photo-holder')
+                img(id="photo" src='')
+
+            div(class='server-debug section')
+
+            div(class='video-debug section')
+
+    include includes/footer.pug

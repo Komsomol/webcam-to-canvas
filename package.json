@@ -1,0 +1,21 @@
+{
+  "name": "y",
+  "version": "0.0.1",
+  "description": "webcam capture image to base64",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webcam",
+    "base64"
+  ],
+  "author": "farhad agzamov",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "compression": "1.7.4",
+    "express": "4.17.1",
+    "pug": "2.0.4"
+  }
+}
