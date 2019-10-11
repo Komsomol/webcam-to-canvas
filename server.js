@@ -1,38 +1,37 @@
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 8081;
-
+var compression = require('compression')
 const path = require("path");
 var bodyParser = require('body-parser');
+let multer = require('multer');
+let upload = multer();
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "views")));
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-async function photo() {
-	var pic = await takephoto();
-	// console.log(`result is => ${pic}`, pic);
-	return pic;
-}
+// compress all responses
+app.use(compression());
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
+// parse application/json
+app.use(bodyParser.json( {limit: '50mb', extended: true}));
 
 app.get('/', (req, res) => {
-
-	res.render('index', {
-		message:'Click get new photo'
-	});
-
+	res.render('index');
 });
 
-app.get('/photo', async (req, res) => {
-	console.log(`Incoming`);
-	var photoUpload = await photo();
-
-	res.render('index', {
-		message:'Photo',
-		image: photoUpload
-	});
+app.post('/upload', upload.single('photo'), (req, res) => {
+	console.log(`Incoming`, req.headers['content-type']);
+	console.log(JSON.stringify(req.body,null,2));
+	res.json(
+		{ 
+			status : 'ok',
+		}
+	);
 });
 
 app.listen(port, () => {

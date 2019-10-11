@@ -8,8 +8,8 @@ app = {
 	canvas: document.getElementById('canvas'),
 	photo : document.getElementById('photo'),
 	settings:{
-		width:640,
-		height:480
+		width:320,
+		height:240
 	},
 	init:() =>{
 
@@ -61,7 +61,7 @@ app = {
 		});
 
 		app.sendBtn.addEventListener('click', ()=>{
-			app.savePhototoPayload();
+			app.sendToAPI();
 		});
 
 		app.select.addEventListener('change', (e)=>{
@@ -125,39 +125,43 @@ app = {
 		app.canvas.height = app.settings.height;
 		context.drawImage(app.video, 0, 0, app.settings.width, app.settings.height);
 		
-		var data = app.canvas.toDataURL('image/png');
-		app.photo.setAttribute('src', data);
+		app.base64 = app.canvas.toDataURL('image/png');
+
+		app.photo.setAttribute('src', app.base64);
 
 		app.sendBtn.disabled = false;
 
+		app.serverDebug.innerHTML = `Image Saved`;
+
 	},
 
-	savePhototoPayload:()=>{
-		
-			//save blob,
-	app.canvas.toBlob( (blob) =>{
-		
-		var payLoad = {
-			name: 'random',
-			email: 'random',
-			photo: blob,
+	sendToAPI:()=>{
+
+		app.serverDebug.innerHTML = `Sending Image`;
+	
+		var jsonPayload = {
+			name : 'Anton Chigarul',
+			email : 'anton@gmail.com',
+			photo: app.base64
 		};
 
-		app.sendToAPI(payLoad);
+		console.log(`sending`, jsonPayload);
 
-	},'image/jpeg', 0.80);
-	//post to API with payload
+		const options = {
+			method: 'POST',
+			headers: {'Content-Type':'application/json'},
+			body:  JSON.stringify(jsonPayload),
+		};
 
-	},
-
-	sendToAPI:(payLoad)=>{
-		fetch('https://api.github.com/gists', {
-			method: 'post',
-			body: JSON.stringify(payLoad)
-		}).then(function(response) {
+		fetch('http://localhost:8081/upload/', options
+		).then(function(response) {
+			console.log(response);
 			return response.json();
 		}).then(function(data) {
 			console.table(data);
+			if(data.status === "ok"){
+				app.serverDebug.innerHTML = `Image Succesfully POSTed`;
+			}
 		});
 	}
 },
